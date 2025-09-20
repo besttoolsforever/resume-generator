@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en-US"> <head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Resume Generator</title>
+  
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+  
+  <style id="cv-style">
+    /* --- EN: Global Variables & Root Styles --- */
+    /* --- PT-BR: Variáveis Globais & Estilos Raiz --- */
+    :root{
+      /* Colors / Cores */
+      --accent: #0f4c81;
+      --text-color-main: #333;
+      --text-color-sidebar: #fff;
+      --muted: #666;
+
+      /* Layout / Leiaute */
+      --page-width: 210mm;
+      --page-height: 297mm;
+      
+      /* Fonts / Fontes */
+      --font-family: 'Helvetica Neue', Arial, sans-serif;
+      --font-size-name: 25px;
+      --font-size-title: 13px;
+      --font-size-body: 12px;
+      --font-size-small: 11px;
+    }
+
+    /* --- EN: Basic Reset & App Layout --- */
+    /* --- PT-BR: Reset Básico & Leiaute da Aplicação --- */
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:var(--font-family);background:#f3f4f6;color:var(--text-color-main);}
+    .app{display:flex;gap:20px;padding:18px}
+    .panel{width:420px;background:#fff;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.08);padding:16px;overflow:auto;max-height:calc(100vh - 36px);}
+    .preview-wrap{flex:1;display:flex;justify-content:center;align-items:flex-start;padding:8px;overflow:auto;max-height:calc(100vh - 36px);}
+
+    /* --- EN: CV A4 Page Styling --- */
+    /* --- PT-BR: Estilização da Página A4 do CV --- */
+    .cv-a4{width:var(--page-width);height:var(--page-height);max-width:820px;background:#fff;padding:0;border:1px solid #e5e7eb;box-shadow:0 8px 30px rgba(0,0,0,.08);display:flex;}
+    .cv{display:grid;grid-template-columns:0.9fr 2.1fr;height:100%;width:100%;}
+
+    /* --- EN: Sidebar Styling --- */
+    /* --- PT-BR: Estilização da Barra Lateral --- */
+    .sidebar{background:var(--accent);color:var(--text-color-sidebar);padding:22px;display:flex;flex-direction:column;align-items:flex-start;}
+    .sidebar a { color: inherit; text-decoration: none; }
+    .sidebar a:hover { text-decoration: underline; }
+    .name-block{text-align:left;margin-bottom:22px;}
+    .name{font-size:var(--font-size-name);font-weight:700;color:var(--text-color-sidebar);letter-spacing:0.5px;}
+    .surname{font-size:var(--font-size-name);font-weight:300;letter-spacing:0.5px;margin-top:-2px;color:rgba(255,255,255,0.85);}
+    .sidebar .section-title{font-size:var(--font-size-title);font-weight:bold;color:var(--text-color-sidebar);margin:18px 0 8px;text-transform:uppercase;letter-spacing:0.5px;}
+    .desc{font-size:var(--font-size-body);line-height:1.5;text-align:justify;color:rgba(255,255,255,0.95);}
+    .contact{font-size:var(--font-size-body);line-height:1.6;}
+    .contact-item{margin-bottom:4px;}
+    .contact-label{font-weight:bold;color:var(--text-color-sidebar);}
+    .additional-info{margin-top:15px;font-size:var(--font-size-body);color:rgba(255,255,255,0.9);}
+    .icon-link { display: flex; align-items: center; gap: 8px; font-size: var(--font-size-body); }
+    .icon-link svg { width: 1.1em; height: 1.1em; fill: currentColor; flex-shrink: 0; }
+
+    /* --- EN: Main Content Styling --- */
+    /* --- PT-BR: Estilização do Conteúdo Principal --- */
+    .main{padding:25px;}
+    .main .section-title{font-size:var(--font-size-title);font-weight:bold;color:var(--accent);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;border-bottom:2px solid var(--accent);padding-bottom:3px;}
+    .experience-item,.edu-item{margin-bottom:16px;}
+    .item-header{display:flex;justify-content:space-between;align-items:baseline;}
+    .item-header h4{margin:0;font-size:14px;font-weight:bold;color:#111;}
+    .item-header .period{font-size:var(--font-size-body);color:var(--muted); white-space: nowrap;}
+    .role-tech{font-size:var(--font-size-body);color:var(--accent);margin-top:3px;font-weight:600;}
+    .tech{font-size:var(--font-size-small);color:var(--muted);margin-top:2px;font-style:italic;}
+    .experience-item p{margin:6px 0 0;font-size:var(--font-size-body);line-height:1.5;text-align:justify;}
+    .edu-item strong{font-size:14px;font-weight:600;}
+    .edu-item .where{font-size:var(--font-size-body);color:var(--muted);margin-top:2px;}
+
+    /* --- EN: Form Elements Styling --- */
+    /* --- PT-BR: Estilização dos Elementos de Formulário --- */
+    label{display:block;font-size:13px;margin-top:10px;font-weight:500;}
+    input[type=text],input[type=email],input[type=url],input[type=number],textarea,select{width:100%;padding:7px;border:1px solid #d1d5db;border-radius:6px;margin-top:5px;font-size:14px;}
+    input[type=color]{width:100%;height:35px;padding: 4px; border:1px solid #d1d5db; border-radius:6px; margin-top:5px; cursor:pointer;}
+    textarea{min-height:70px;line-height:1.4;}
+    button{padding:8px 14px;border-radius:6px;border:0;font-weight:600;cursor:pointer;font-size:13px;}
+    .btn-primary{background:var(--accent);color:#fff;}
+    .btn-secondary{background:#e5e7eb;color:#374151;}
+    .btn-danger{background:#ef4444;color:#fff;}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .exp-row,.edu-row{border:1px solid #e5e7eb;padding:12px;border-radius:8px;margin-bottom:10px;background:#fafafa; position: relative;}
+    .exp-row.sortable-ghost{opacity:0.4; background: #e0f2fe;}
+    .exp-row-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .exp-row-header span { font-weight: bold; color: #333; cursor: grab; }
+    .editable{outline:2px dashed transparent;transition:outline .2s;}
+    .editable:focus{outline:2px dashed rgba(15,76,129,0.3)}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="panel">
+      <h3>Fill in the fields</h3>
+      <label>Full Name
+        <input id="input-name" type="text" value="Eleanor Vance">
+      </label>
+      <label>Age
+        <input id="input-age" type="number" value="28">
+      </label>
+      <label>Summary / Description
+        <textarea id="input-desc">A results-driven Full Stack Developer with 5+ years of experience in designing, developing, and deploying web applications. Proficient in JavaScript, React, Node.js, and cloud services.</textarea>
+      </label>
+      <div class="row">
+        <label>City
+          <input id="input-city" type="text" value="Austin, TX">
+        </label>
+        <label>Phone
+          <input id="input-phone" type="text" value="(512) 555-0123">
+        </label>
+      </div>
+      <label>Email
+        <input id="input-email" type="email" value="eleanor.vance.dev@email.com">
+      </label>
+      <label>Portfolio (GitHub URL, etc.)
+        <input id="input-github" type="url" value="https://github.com/besttoolsforever">
+      </label>
+      <label>Portfolio Link Text (Optional)
+        <input id="input-github-label" type="text" placeholder="Ex: github.com/username">
+      </label>
+      <hr style="margin: 16px 0;"/>
+
+      <h4>Education</h4>
+      <div id="edu-list"></div>
+      <button id="add-edu" class="btn-secondary">+ Add Education</button>
+      <hr style="margin: 16px 0;"/>
+
+      <h4>Work Experience</h4>
+      <div id="exp-list"></div>
+      <button id="add-exp" class="btn-secondary">+ Add Experience</button>
+      <hr style="margin: 16px 0;"/>
+
+      <label>Additional Information
+        <textarea id="input-additional">Eager to apply my skills in a challenging and collaborative environment. Open to remote opportunities.</textarea>
+      </label>
+      <hr style="margin: 16px 0;"/>
+
+      <h4>Appearance</h4>
+      <label>Accent Color
+        <input id="accent" type="color" value="#0f4c81">
+      </label>
+       <div class="row">
+        <label>Main Text Color
+            <input id="color-main" type="color" value="#333333">
+        </label>
+        <label>Sidebar Text Color
+            <input id="color-sidebar" type="color" value="#FFFFFF">
+        </label>
+    </div>
+    <label style="margin-top:15px;">Font Sizes (px)</label>
+    <div class="row">
+        <label>Name <input id="fs-name" type="number" value="25" min="10" step="1"></label>
+        <label>Titles <input id="fs-title" type="number" value="13" min="8" step="1"></label>
+    </div>
+    <div class="row">
+        <label>Body <input id="fs-body" type="number" value="12" min="8" step="1"></label>
+        <label>Small <input id="fs-small" type="number" value="11" min="8" step="1"></label>
+    </div>
+
+      <div style="display:flex;gap:8px;margin-top:18px">
+        <button id="apply" class="btn-primary">Apply Changes</button>
+        <button id="gen" style="background:#10b981;color:#fff;">Generate Print</button>
+        <button id="export" class="btn-secondary">Export HTML</button>
+      </div>
+    </div>
+
+    <div class="preview-wrap">
+      <div class="cv-a4" id="cv-a4">
+        <div class="cv" id="cv">
+          <div class="sidebar">
+            <div class="name-block">
+              <div class="name editable" id="cv-name" contenteditable="true">ELEANOR</div>
+              <div class="surname editable" id="cv-surname" contenteditable="true">VANCE</div>
+            </div>
+
+            <div id="desc-section">
+                <div class="section-title">Description</div>
+                <div class="desc editable" id="cv-desc" contenteditable="true"></div>
+            </div>
+
+            <div id="contact-section">
+                <div class="section-title">Personal Data</div>
+                <div class="contact">
+                    <div class="contact-item" id="age-item"><span class="contact-label">Age:</span> <span class="editable" id="cv-age" contenteditable="true"></span></div>
+                    <div class="contact-item" id="email-item"><span class="contact-label">Email:</span> <span class="editable" id="cv-email" contenteditable="true"></span></div>
+                    <div class="contact-item" id="phone-item"><span class="contact-label">Phone:</span> <span class="editable" id="cv-phone" contenteditable="true"></span></div>
+                    <div class="contact-item" id="city-item"><span class="contact-label">City:</span> <span class="editable" id="cv-city" contenteditable="true"></span></div>
+                </div>
+            </div>
+            
+            <div id="portfolio-section">
+                <div class="section-title">Portfolio</div>
+                <a href="#" id="cv-github" class="icon-link" target="_blank" rel="noopener noreferrer">
+                    <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg>
+                    <span class="editable" id="cv-github-user" contenteditable="true"></span>
+                </a>
+            </div>
+
+            <div class="additional-info" id="additional-section">
+              <div class="section-title">Additional Info</div>
+              <div class="editable" id="cv-additional" contenteditable="true"></div>
+            </div>
+          </div>
+
+          <div class="main">
+            <div id="edu-section">
+                <div class="section-title">Academic Background</div>
+                <div id="cv-edus"></div>
+            </div>
+
+            <div id="exp-section" style="margin-top:20px;">
+                <div class="section-title">Professional Experience</div>
+                <div id="cv-exps"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- EN: Helper functions to select DOM elements ---
+    // --- PT-BR: Funções auxiliares para selecionar elementos do DOM ---
+    const el = (q, ctx=document) => ctx.querySelector(q);
+    const els = (q, ctx=document) => Array.from(ctx.querySelectorAll(q));
+
+    // --- EN: Default data for professional experiences (in reverse chronological order) ---
+    // --- PT-BR: Dados padrão para as experiências profissionais (em ordem cronológica inversa) ---
+    let experiences = [
+      {
+        period: '07/2021 – Present',
+        title: 'Senior Software Engineer',
+        company: 'Innovatech Solutions Inc.',
+        role: 'Lead Developer',
+        tech: 'React, Node.js, TypeScript, AWS, Docker',
+        desc: 'Led a team of developers in building a scalable microservices architecture. Designed and implemented RESTful APIs, and improved application performance by 30%.'
+      },
+      {
+        period: '06/2019 – 06/2021',
+        title: 'Software Developer',
+        company: 'DataStream Analytics',
+        role: 'Full Stack Developer',
+        tech: 'Python, Django, PostgreSQL, Vue.js',
+        desc: 'Developed and maintained data-intensive web applications. Contributed to database design and created interactive data visualizations for clients.'
+      },
+      {
+        period: '05/2018 – 08/2018',
+        title: 'Software Engineer Intern',
+        company: 'NextGen Apps',
+        role: 'Frontend Intern',
+        tech: 'JavaScript, HTML5, CSS3, Vue.js',
+        desc: 'Assisted the frontend team in developing user-facing features, fixing bugs, and writing unit tests. Gained hands-on experience in an agile development environment.'
+      }
+    ];
+
+    // --- EN: Default data for education ---
+    // --- PT-BR: Dados padrão para a formação acadêmica ---
+    let educations = [
+      {
+        course: 'Bachelor of Science in Computer Science',
+        where: 'University of Texas at Austin – 2015 - 2019'
+      },
+      {
+        course: 'Full Stack Web Development Certificate',
+        where: 'CodeSphere Academy – 2019'
+      }
+    ];
+
+    // --- EN: Toggles the visibility of an element based on whether its value is empty. ---
+    // --- PT-BR: Alterna a visibilidade de um elemento com base no fato de seu valor estar vazio. ---
+    const toggleElementVisibility = (value, elementId) => {
+        const element = el(`#${elementId}`);
+        if (!element) return;
+        const hasValue = Array.isArray(value) ? value.length > 0 : (value && String(value).trim() !== '');
+        element.style.display = hasValue ? '' : 'none';
+    };
+
+    // --- EN: Reads data from the experience form fields and updates the `experiences` array. ---
+    // --- PT-BR: Lê os dados dos campos do formulário de experiência e atualiza o array `experiences`. ---
+    const syncExperiencesFromForm = () => {
+        const formRows = els('.exp-row');
+        experiences = formRows.map(row => ({
+            title: el('.exp-title', row).value,
+            company: el('.exp-company', row).value,
+            period: el('.exp-period', row).value,
+            role: el('.exp-role', row).value,
+            tech: el('.exp-tech', row).value,
+            desc: el('.exp-desc', row).value
+        }));
+    };
+
+    // --- EN: Renders the professional experiences onto the CV preview. ---
+    // --- PT-BR: Renderiza as experiências profissionais na pré-visualização do CV. ---
+    const renderCVExperiences = () => {
+      const cvExps = el('#cv-exps');
+      cvExps.innerHTML = '';
+      experiences.forEach(exp => {
+        const div = document.createElement('div');
+        div.className = 'experience-item editable';
+        const companyText = exp.company ? ` - ${exp.company}` : '';
+        div.innerHTML = `
+          <div class="item-header">
+            <h4>${exp.title}${companyText}</h4>
+            <div class="period">${exp.period}</div>
+          </div>
+          <div class="role-tech"><b>Role:</b> ${exp.role}</div>
+          <div class="tech"><b>Technologies:</b> ${exp.tech}</div>
+          <p><b>Description:</b> ${exp.desc}</p>`;
+        cvExps.appendChild(div);
+      });
+    };
+
+    // --- EN: Renders the education history onto the CV preview. ---
+    // --- PT-BR: Renderiza o histórico acadêmico na pré-visualização do CV. ---
+    const renderCVEducations = () => {
+      const wrap = el('#cv-edus');
+      wrap.innerHTML = '';
+      educations.forEach(edu => {
+        const d = document.createElement('div');
+        d.className = 'edu-item editable';
+        d.innerHTML = `<strong>${edu.course}</strong><div class="where">${edu.where}</div>`;
+        wrap.appendChild(d);
+      });
+    };
+
+    // --- EN: Renders the form fields for each professional experience. ---
+    // --- PT-BR: Renderiza os campos de formulário para cada experiência profissional. ---
+    const renderExperienceForm = () => {
+      const list = el('#exp-list');
+      list.innerHTML = '';
+      experiences.forEach((exp, i) => {
+        const row = document.createElement('div');
+        row.className = 'exp-row';
+        row.dataset.index = i;
+        row.innerHTML = `
+          <div class="exp-row-header">
+            <span title="Drag to reorder">↕️ ${exp.title || 'New Experience'}</span>
+            <button class="btn-danger remove-exp" data-index="${i}" title="Remove experience">X</button>
+          </div>
+          <div class="row">
+            <label>Title <input class="exp-title" type="text" value="${exp.title}"></label>
+            <label>Company <input class="exp-company" type="text" value="${exp.company || ''}"></label>
+          </div>
+          <div class="row">
+            <label>Period <input class="exp-period" type="text" value="${exp.period}"></label>
+            <label>Role <input class="exp-role" type="text" value="${exp.role}"></label>
+          </div>
+          <label>Technologies <input class="exp-tech" type="text" value="${exp.tech}"></label>
+          <label>Description <textarea class="exp-desc">${exp.desc}</textarea></label>`;
+        list.appendChild(row);
+      });
+      
+      els('.remove-exp').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const index = parseInt(e.target.dataset.index, 10);
+            experiences.splice(index, 1);
+            renderExperienceForm();
+            applyAll(); // EN: Re-render CV after removal / PT-BR: Re-renderiza o CV após a remoção
+        });
+      });
+    };
+
+    // --- EN: Renders the form fields for each education entry. ---
+    // --- PT-BR: Renderiza os campos de formulário para cada entrada de formação. ---
+    const renderEducationForm = () => {
+      const list = el('#edu-list');
+      list.innerHTML = '';
+      educations.forEach(edu => {
+        const row = document.createElement('div');
+        row.className = 'edu-row';
+        row.innerHTML = `
+          <label>Course / Degree <input class="edu-course" type="text" value="${edu.course}"></label>
+          <label>Institution / Period <input class="edu-where" type="text" value="${edu.where}"></label>`;
+        list.appendChild(row);
+      });
+    };
+
+    // --- EN: Initializes the drag-and-drop functionality for experiences. ---
+    // --- PT-BR: Inicializa a funcionalidade de arrastar e soltar para as experiências. ---
+    const initSortable = () => {
+        const list = el('#exp-list');
+        new Sortable(list, {
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            onEnd: () => {
+                syncExperiencesFromForm(); // EN: Sync array order after dragging / PT-BR: Sincroniza a ordem do array após arrastar
+                renderExperienceForm(); // EN: Re-render form to maintain correct indices / PT-BR: Re-renderiza o formulário para manter os índices corretos
+            }
+        });
+    };
+
+    // --- EN: Main function to apply all form data to the CV preview. ---
+    // --- PT-BR: Função principal para aplicar todos os dados do formulário na pré-visualização do CV. ---
+    const applyAll = () => {
+      // EN: Collect data from panel inputs
+      // PT-BR: Coleta os dados das entradas do painel
+      const nameValue = el('#input-name').value;
+      const ageValue = el('#input-age').value;
+      const descValue = el('#input-desc').value;
+      const cityValue = el('#input-city').value;
+      const phoneValue = el('#input-phone').value;
+      const emailValue = el('#input-email').value;
+      const githubUrl = el('#input-github').value.trim();
+      const githubLabel = el('#input-github-label').value.trim();
+      const additionalValue = el('#input-additional').value;
+
+      // EN: Update basic personal data in the CV preview
+      // PT-BR: Atualiza os dados pessoais básicos na pré-visualização do CV
+      const nameParts = nameValue.split(' ');
+      el('#cv-name').innerText = nameParts.slice(0, 1).join(' ');
+      el('#cv-surname').innerText = nameParts.slice(1).join(' ');
+      el('#cv-age').innerText = ageValue;
+      el('#cv-desc').innerText = descValue;
+      el('#cv-city').innerText = cityValue;
+      el('#cv-phone').innerText = phoneValue;
+      el('#cv-email').innerText = emailValue;
+      el('#cv-additional').innerText = additionalValue;
+
+      // EN: Update portfolio link
+      // PT-BR: Atualiza o link do portfólio
+      if (githubUrl) {
+          el('#cv-github').href = githubUrl;
+          let linkText = githubLabel;
+          if (!linkText) {
+              linkText = githubUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
+          }
+          el('#cv-github-user').innerText = linkText;
+      }
+
+      // EN: Sync and render education and experience sections
+      // PT-BR: Sincroniza e renderiza as seções de formação e experiência
+      educations = Array.from(els('.edu-row')).map(row => ({
+        course: el('.edu-course', row).value,
+        where: el('.edu-where', row).value
+      }));
+      renderCVEducations();
+      syncExperiencesFromForm();
+      renderCVExperiences();
+
+      // EN: Control the visibility of CV sections
+      // PT-BR: Controla a visibilidade das seções do CV
+      toggleElementVisibility(descValue, 'desc-section');
+      toggleElementVisibility(ageValue, 'age-item');
+      toggleElementVisibility(emailValue, 'email-item');
+      toggleElementVisibility(phoneValue, 'phone-item');
+      toggleElementVisibility(cityValue, 'city-item');
+      toggleElementVisibility(githubUrl, 'portfolio-section');
+      toggleElementVisibility(additionalValue, 'additional-section');
+      toggleElementVisibility(educations, 'edu-section');
+      toggleElementVisibility(experiences, 'exp-section');
+
+      // EN: Update appearance variables (colors and fonts)
+      // PT-BR: Atualiza as variáveis de aparência (cores e fontes)
+      const rootStyle = document.documentElement.style;
+      rootStyle.setProperty('--accent', el('#accent').value);
+      rootStyle.setProperty('--text-color-main', el('#color-main').value);
+      rootStyle.setProperty('--text-color-sidebar', el('#color-sidebar').value);
+      rootStyle.setProperty('--font-size-name', el('#fs-name').value + 'px');
+      rootStyle.setProperty('--font-size-title', el('#fs-title').value + 'px');
+      rootStyle.setProperty('--font-size-body', el('#fs-body').value + 'px');
+      rootStyle.setProperty('--font-size-small', el('#fs-small').value + 'px');
+    };
+
+    // --- EN: Event Listeners for buttons ---
+    // --- PT-BR: Listeners de Eventos para os botões ---
+    el('#apply').addEventListener('click', applyAll);
+    
+    el('#add-edu').addEventListener('click', () => {
+      educations.push({ course: 'New Degree', where: 'University – Year' });
+      renderEducationForm();
+    });
+    
+    el('#add-exp').addEventListener('click', () => {
+      experiences.unshift({ period: 'MM/YYYY – MM/YYYY', title: 'Job Title', company: 'Company', role: 'Your Role', tech: 'Technologies', desc: 'Job description.' });
+      renderExperienceForm();
+    });
+
+    // --- EN: Functions for Printing and Exporting ---
+    // --- PT-BR: Funções para Impressão e Exportação ---
+    const getExportStyles = () => {
+      const cvStyles = el('#cv-style').innerHTML;
+      const centeringStyles = `
+        body { display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; background-color: #f0f0f0; padding: 2rem 0; margin: 0; }
+        .cv-a4 { border: none; box-shadow: 0 8px 30px rgba(0,0,0,.15); }
+        @media print { body { background-color: #fff; padding: 0; } .cv-a4 { box-shadow: none; margin: 0; } }
+        @page { size: A4; margin: 0; }`;
+      return cvStyles + centeringStyles;
+    }
+
+    const generatePrint = () => {
+      applyAll();
+      const cvContent = el('#cv-a4').outerHTML;
+      const allStyles = getExportStyles();
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(`<!DOCTYPE html><html lang="en-US"><head><meta charset="UTF-8"><title>Resume - ${el('#input-name').value}</title><style>${allStyles}</style></head><body>${cvContent}</body></html>`);
+      printWindow.document.close();
+      printWindow.onload = () => { printWindow.focus(); printWindow.print(); };
+    };
+    el('#gen').addEventListener('click', generatePrint);
+
+    const exportHTML = () => {
+      applyAll();
+      const cvHTML = el('#cv-a4').outerHTML;
+      const allStyles = getExportStyles();
+      const fullHTML = `<!DOCTYPE html><html lang="en-US"><head><meta charset="utf-8"><title>Resume - ${el('#input-name').value}</title><style>${allStyles}</style></head><body>${cvHTML}</body></html>`;
+      const blob = new Blob([fullHTML], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'resume.html';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    };
+    el('#export').addEventListener('click', exportHTML);
+
+    // --- EN: Initial setup when the page loads ---
+    // --- PT-BR: Configuração inicial quando a página carrega ---
+    document.addEventListener('DOMContentLoaded', () => {
+      renderExperienceForm();
+      renderEducationForm();
+      initSortable();
+      applyAll();
+    });
+  </script>
+</body>
+</html>
