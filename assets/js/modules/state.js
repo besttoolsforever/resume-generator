@@ -83,18 +83,31 @@
     }
   ];
 
+  const defaultFormData = {
+    name: "Eleanor Vance",
+    age: "28",
+    desc: "A results-driven Full Stack Developer with 5+ years of experience in designing, developing, and deploying web applications. Proficient in JavaScript, React, Node.js, and cloud services.",
+    city: "Austin, TX",
+    phone: "(512) 555-0123",
+    email: "eleanor.vance.dev@email.com",
+    githubUrl: "https://github.com/besttoolsforever",
+    githubLabel: "",
+    additional: "Eager to apply my skills in a challenging and collaborative environment. Open to remote opportunities."
+  };
+
   CVApp.State.resetState = function () {
-    CVApp.State.data.experiences = [...defaultExperiences];
-    CVApp.State.data.educations = [...defaultEducations];
-    CVApp.State.data.courses = [...defaultCourses];
-    CVApp.State.data.languages = [...defaultLanguages];
+    CVApp.State.data.formData = { ...defaultFormData };
+    CVApp.State.data.experiences = JSON.parse(JSON.stringify(defaultExperiences));
+    CVApp.State.data.educations = JSON.parse(JSON.stringify(defaultEducations));
+    CVApp.State.data.courses = JSON.parse(JSON.stringify(defaultCourses));
+    CVApp.State.data.languages = JSON.parse(JSON.stringify(defaultLanguages));
 
     // Initialize Custom Sections List
     CVApp.State.data.customSections = [
       {
         id: 'project-section', // Fixed ID for default projects to ensure stability in ordering
         title: "Projects",
-        items: [...defaultProjects]
+        items: JSON.parse(JSON.stringify(defaultProjects))
       }
     ];
 
@@ -117,17 +130,7 @@
     customSections: [], // Array of { id, title, items: [] }
     sectionOrder: [],   // Array of { id, type }
 
-    formData: {
-      name: "Eleanor Vance",
-      age: "28",
-      desc: "A results-driven Full Stack Developer with 5+ years of experience in designing, developing, and deploying web applications. Proficient in JavaScript, React, Node.js, and cloud services.",
-      city: "Austin, TX",
-      phone: "(512) 555-0123",
-      email: "eleanor.vance.dev@email.com",
-      githubUrl: "https://github.com/besttoolsforever",
-      githubLabel: "",
-      additional: "Eager to apply my skills in a challenging and collaborative environment. Open to remote opportunities."
-    },
+    formData: { ...defaultFormData },
 
     settings: {
       accent: "#0f4c81",

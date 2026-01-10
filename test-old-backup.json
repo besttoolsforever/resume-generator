@@ -1,0 +1,47 @@
+{
+  "experiences": [
+    {
+      "period": "01/2020 – 12/2021",
+      "title": "Test Developer",
+      "company": "Test Company",
+      "role": "Senior Dev",
+      "tech": "JavaScript, Python",
+      "desc": "This is a test backup without customSections or sectionOrder fields."
+    }
+  ],
+  "educations": [
+    {
+      "course": "Bachelor in Computer Science",
+      "where": "Test University – 2016-2020"
+    }
+  ],
+  "courses": [],
+  "languages": [
+    {
+      "name": "English",
+      "level": "Native"
+    }
+  ],
+  "formData": {
+    "name": "Test User",
+    "age": "30",
+    "desc": "A test user from an old backup",
+    "city": "Test City",
+    "phone": "(123) 456-7890",
+    "email": "test@example.com",
+    "githubUrl": "https://github.com/testuser",
+    "githubLabel": "",
+    "additional": "This is a backup from before customSections existed"
+  },
+  "settings": {
+    "accent": "#0f4c81",
+    "textMain": "#333333",
+    "textSidebar": "#FFFFFF",
+    "fontName": 25,
+    "fontTitle": 13,
+    "fontBody": 12,
+    "fontSmall": 11,
+    "language": "en-US",
+    "template": "classic"
+  }
+}

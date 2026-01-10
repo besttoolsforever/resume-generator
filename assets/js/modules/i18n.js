@@ -93,6 +93,7 @@
             "tmpl_swiss": "Swiss (Editorial)",
             "tmpl_orbit": "Orbit (Dark Mode)",
             "btn_clear_content": "Clear Content",
+            "btn_restore_test": "Restore Test Content",
             "msg_clear_confirm": "Are you sure? This will remove all text and items."
         },
         "pt-BR": {
@@ -187,6 +188,7 @@
             "tmpl_swiss": "Suíço (Editorial)",
             "tmpl_orbit": "Orbit (Modo Escuro)",
             "btn_clear_content": "Limpar Conteúdo",
+            "btn_restore_test": "Restaurar Conteúdo de Teste",
             "msg_clear_confirm": "Tem certeza? Isso removerá todo o texto e itens."
         },
         "es-ES": {
@@ -278,6 +280,7 @@
             "tmpl_swiss": "Suizo (Editorial)",
             "tmpl_orbit": "Orbit (Modo Oscuro)",
             "btn_clear_content": "Limpiar Contenido",
+            "btn_restore_test": "Restaurar Contenido de Prueba",
             "msg_clear_confirm": "¿Seguro? Esto eliminará todo el texto y elementos."
         },
         "fr-FR": {
@@ -364,6 +367,7 @@
             "tmpl_nova": "Nova (Tech)",
             "tmpl_horizon": "Horizon (Compact)",
             "btn_clear_content": "Effacer Contenu",
+            "btn_restore_test": "Restaurar Conteúdo (Test)",
             "msg_clear_confirm": "Êtes-vous sûr? Cela supprimera tout le texte."
         },
         "de-DE": {
@@ -451,6 +455,7 @@
             "tmpl_swiss": "Schweizer (Editorial)",
             "tmpl_orbit": "Orbit (Dunkelmodus)",
             "btn_clear_content": "Inhalt löschen",
+            "btn_restore_test": "Testinhalt wiederherstellen",
             "msg_clear_confirm": "Bist du sicher? Dies entfernt alle Texte."
         },
         "it-IT": {
@@ -538,6 +543,7 @@
             "tmpl_swiss": "Svizzero (Editoriale)",
             "tmpl_orbit": "Orbit (Modalità Scura)",
             "btn_clear_content": "Cancella Contenuto",
+            "btn_restore_test": "Ripristina Test",
             "msg_clear_confirm": "Sei sicuro? Questo rimuoverà tutto il testo."
         }
     };

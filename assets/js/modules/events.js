@@ -176,17 +176,21 @@
                         name: el('.lang-name', r).value,
                         level: el('.lang-level', r).value
                     }));
-                } else if (listId.startsWith('list-custom-')) {
-                    const sectionId = listId.replace('list-', '');
-                    const section = state.customSections.find(s => s.id === sectionId);
-                    if (section) {
-                        const rows = els('.exp-row', list);
-                        section.items = rows.map(r => ({
-                            title: el('.custom-title', r).value,
-                            period: el('.custom-period', r).value,
-                            subtitle: el('.custom-subtitle', r).value,
-                            desc: el('.custom-desc', r).value
-                        }));
+                } else if (listId.startsWith('list-')) {
+                    // Check if it's a custom section (not edu-list, exp-list, courses-list, langs-list)
+                    const systemLists = ['edu-list', 'exp-list', 'courses-list', 'langs-list'];
+                    if (!systemLists.includes(listId)) {
+                        const sectionId = listId.replace('list-', '');
+                        const section = state.customSections.find(s => s.id === sectionId);
+                        if (section) {
+                            const rows = els('.exp-row', list);
+                            section.items = rows.map(r => ({
+                                title: el('.custom-title', r).value,
+                                period: el('.custom-period', r).value,
+                                subtitle: el('.custom-subtitle', r).value,
+                                desc: el('.custom-desc', r).value
+                            }));
+                        }
                     }
                 }
 
@@ -323,6 +327,21 @@
             });
         }
 
+        // Restore Test Content
+        const btnRestoreTest = el('#restore-test-btn');
+        if (btnRestoreTest) {
+            btnRestoreTest.addEventListener('click', () => {
+                // Optional: confirmation
+                // if (!confirm("Restore default test content?")) return;
+
+                CVApp.State.resetState();
+                CVApp.State.saveState();
+                initInputs();
+                CVApp.Render.renderSidebarForms();
+                CVApp.Render.updatePreview();
+            });
+        }
+
         // Clear Content
         const btnClear = el('#clear-btn');
         if (btnClear) {
@@ -344,16 +363,8 @@
                 state.experiences = [];
                 state.courses = [];
                 state.languages = [];
-                state.customSections = []; // Remove all custom sections? "New Section" implies removing them.
-
-                // Determine if we should keep "Projects" empty or remove it?
-                // "limpar todo o conteúdo" -> clear all. 
-                // But structure? The user usually wants a blank slate.
-                // Resetting order? Probably keep current order or reset to default? 
-                // Let's keep order but empty lists.
-                // If customSections is empty, "Projects" (which is custom) is gone.
-                // We should probably re-add empty Projects section if it is considered "Stock".
-                // But for True Clear, we wipe it. User can add "New Section".
+                state.customSections = [];
+                state.sectionOrder = [];
 
                 CVApp.State.saveState();
                 initInputs();
@@ -437,9 +448,22 @@
                     try {
                         const json = JSON.parse(e.target.result);
                         if (json.formData && json.educations) {
-                            CVApp.State.data = json;
+                            // Ensure backwards compatibility
+                            if (!json.customSections) json.customSections = [];
+                            if (!json.sectionOrder) {
+                                // Initialize default section order
+                                json.sectionOrder = [
+                                    { id: 'edu-section', type: 'system' },
+                                    { id: 'courses-section', type: 'system' },
+                                    { id: 'exp-section', type: 'system' }
+                                ];
+                            }
+
+                            // Use Object.assign to preserve references
+                            Object.assign(CVApp.State.data, json);
                             CVApp.State.saveState();
                             initInputs();
+                            CVApp.Render.renderSidebarForms();
                             CVApp.Render.updateInterfaceLanguage();
                             CVApp.Render.updatePreview();
                             alert(CVApp.I18n.getTranslation('msg_restore_success'));
