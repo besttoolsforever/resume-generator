@@ -293,10 +293,16 @@ CVApp.Render = (function () {
             // Find Custom Data
             const secData = CVApp.State.data.customSections.find(s => s.id === sectionMeta.id);
             if (secData) {
+                // Check if section has any items before rendering
+                const items = secData.items || [];
+                if (items.length === 0) {
+                    return null; // Don't render empty custom sections at all
+                }
+
                 titleDiv.innerText = secData.title;
                 contentDiv.className = 'custom-section-items'; // Class for future styling?
 
-                secData.items.forEach(item => {
+                items.forEach(item => {
                     const div = document.createElement('div');
                     div.className = 'experience-item editable';
                     div.innerHTML = `
@@ -308,12 +314,11 @@ CVApp.Render = (function () {
                     <p>${item.desc}</p>`;
                     contentDiv.appendChild(div);
                 });
-
-                if (secData.items.length === 0) wrapper.style.display = 'none';
             } else {
                 return null; // Section deleted?
             }
         }
+
 
         wrapper.appendChild(titleDiv);
         wrapper.appendChild(contentDiv);
