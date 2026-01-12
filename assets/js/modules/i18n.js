@@ -72,6 +72,9 @@
             "ui_fill_fields": "Fill in the fields",
             "ui_appearance": "Appearance",
             "ui_accent_color": "Accent Color",
+            "ui_secondary_color": "Secondary Color (for some templates)",
+            "ui_dark_bg": "Dark Background (for some templates)",
+            "ui_light_bg": "Light Background (for some templates)",
             "ui_main_color": "Main Text Color",
             "ui_sidebar_color": "Sidebar Text Color",
             "ui_font_sizes": "Font Sizes (px)",
@@ -94,7 +97,10 @@
             "tmpl_orbit": "Orbit (Dark Mode)",
             "btn_clear_content": "Clear Content",
             "btn_restore_test": "Restore Test Content",
-            "msg_clear_confirm": "Are you sure? This will remove all text and items."
+            "msg_clear_confirm": "Are you sure? This will remove all text and items.",
+            "msg_restore_test_confirm": "Are you sure? This will replace your current data with test data.",
+            "btn_reset_colors": "🎨 Restore Default Colors",
+            "msg_reset_colors_confirm": "Restore default colors for this template? Your current color customizations will be lost."
         },
         "pt-BR": {
             "section_desc": "Descrição",
@@ -167,6 +173,9 @@
             "ui_fill_fields": "Preencha os campos",
             "ui_appearance": "Aparência",
             "ui_accent_color": "Cor de Destaque",
+            "ui_secondary_color": "Cor Secundária (para alguns modelos)",
+            "ui_dark_bg": "Fundo Escuro (para alguns modelos)",
+            "ui_light_bg": "Fundo Claro (para alguns modelos)",
             "ui_main_color": "Cor do Texto Principal",
             "ui_sidebar_color": "Cor do Texto Lateral",
             "ui_font_sizes": "Tamanhos de Fonte (px)",
@@ -189,7 +198,10 @@
             "tmpl_orbit": "Orbit (Modo Escuro)",
             "btn_clear_content": "Limpar Conteúdo",
             "btn_restore_test": "Restaurar Conteúdo de Teste",
-            "msg_clear_confirm": "Tem certeza? Isso removerá todo o texto e itens."
+            "msg_clear_confirm": "Tem certeza? Isso removerá todo o texto e itens.",
+            "msg_restore_test_confirm": "Tem certeza? Isso substituirá seus dados atuais por dados de teste.",
+            "btn_reset_colors": "🎨 Restaurar Cores Padrão",
+            "msg_reset_colors_confirm": "Restaurar cores padrão deste modelo? Suas personalizações de cor atuais serão perdidas."
         },
         "es-ES": {
             "section_desc": "Descripción",
@@ -259,6 +271,9 @@
             "ui_fill_fields": "Rellena los campos",
             "ui_appearance": "Apariencia",
             "ui_accent_color": "Color de Acento",
+            "ui_secondary_color": "Color Secundario (para algunas plantillas)",
+            "ui_dark_bg": "Fondo Oscuro (para algunas plantillas)",
+            "ui_light_bg": "Fondo Claro (para algunas plantillas)",
             "ui_main_color": "Color Principal",
             "ui_sidebar_color": "Color Barra Lateral",
             "ui_font_sizes": "Tamaños de Fuente (px)",
@@ -281,7 +296,10 @@
             "tmpl_orbit": "Orbit (Modo Oscuro)",
             "btn_clear_content": "Limpiar Contenido",
             "btn_restore_test": "Restaurar Contenido de Prueba",
-            "msg_clear_confirm": "¿Seguro? Esto eliminará todo el texto y elementos."
+            "msg_clear_confirm": "¿Seguro? Esto eliminará todo el texto y elementos.",
+            "msg_restore_test_confirm": "¿Está seguro? Esto reemplazará sus datos actuales con datos de prueba.",
+            "btn_reset_colors": "🎨 Restaurar Colores Predeterminados",
+            "msg_reset_colors_confirm": "¿Restaurar colores predeterminados para esta plantilla? Se perderán sus personalizaciones de color actuales."
         },
         "fr-FR": {
             "section_desc": "Description",
@@ -347,6 +365,9 @@
             "ui_fill_fields": "Remplissez les champs",
             "ui_appearance": "Apparence",
             "ui_accent_color": "Couleur d'accent",
+            "ui_secondary_color": "Couleur Secondaire (pour certains modèles)",
+            "ui_dark_bg": "Fond Sombre (pour certains modèles)",
+            "ui_light_bg": "Fond Clair (pour certains modèles)",
             "ui_main_color": "Couleur Principale",
             "ui_sidebar_color": "Couleur Latérale",
             "ui_font_sizes": "Tailles de Police (px)",
@@ -368,7 +389,10 @@
             "tmpl_horizon": "Horizon (Compact)",
             "btn_clear_content": "Effacer Contenu",
             "btn_restore_test": "Restaurar Conteúdo (Test)",
-            "msg_clear_confirm": "Êtes-vous sûr? Cela supprimera tout le texte."
+            "msg_clear_confirm": "Êtes-vous sûr? Cela supprimera tout le texte.",
+            "msg_restore_test_confirm": "Êtes-vous sûr? Cela remplacera vos données actuelles par des données de test.",
+            "btn_reset_colors": "🎨 Restaurer les Couleurs par Défaut",
+            "msg_reset_colors_confirm": "Restaurer les couleurs par défaut pour ce modèle ? Vos personnalisations de couleur actuelles seront perdues."
         },
         "de-DE": {
             "section_desc": "Beschreibung",
@@ -434,6 +458,9 @@
             "ui_fill_fields": "Felder ausfüllen",
             "ui_appearance": "Aussehen",
             "ui_accent_color": "Akzentfarbe",
+            "ui_secondary_color": "Sekundärfarbe (für einige Vorlagen)",
+            "ui_dark_bg": "Dunkler Hintergrund (für einige Vorlagen)",
+            "ui_light_bg": "Heller Hintergrund (für einige Vorlagen)",
             "ui_main_color": "Hauptfarbe",
             "ui_sidebar_color": "Seitenleistenfarbe",
             "ui_font_sizes": "Schriftgrößen (px)",
@@ -456,7 +483,10 @@
             "tmpl_orbit": "Orbit (Dunkelmodus)",
             "btn_clear_content": "Inhalt löschen",
             "btn_restore_test": "Testinhalt wiederherstellen",
-            "msg_clear_confirm": "Bist du sicher? Dies entfernt alle Texte."
+            "msg_clear_confirm": "Bist du sicher? Dies entfernt alle Texte.",
+            "msg_restore_test_confirm": "Bist du sicher? Dies ersetzt deine aktuellen Daten durch Testdaten.",
+            "btn_reset_colors": "🎨 Standardfarben wiederherstellen",
+            "msg_reset_colors_confirm": "Standardfarben für diese Vorlage wiederherstellen? Ihre aktuellen Farbanpassungen gehen verloren."
         },
         "it-IT": {
             "section_desc": "Descrizione",
@@ -522,6 +552,9 @@
             "ui_fill_fields": "Compila i campi",
             "ui_appearance": "Aspetto",
             "ui_accent_color": "Colore Accento",
+            "ui_secondary_color": "Colore Secondario (per alcuni modelli)",
+            "ui_dark_bg": "Sfondo Scuro (per alcuni modelli)",
+            "ui_light_bg": "Sfondo Chiaro (per alcuni modelli)",
             "ui_main_color": "Colore Principale",
             "ui_sidebar_color": "Colore Barra Laterale",
             "ui_font_sizes": "Dimensioni Carattere (px)",
@@ -544,7 +577,10 @@
             "tmpl_orbit": "Orbit (Modalità Scura)",
             "btn_clear_content": "Cancella Contenuto",
             "btn_restore_test": "Ripristina Test",
-            "msg_clear_confirm": "Sei sicuro? Questo rimuoverà tutto il testo."
+            "msg_clear_confirm": "Sei sicuro? Questo rimuoverà tutto il testo.",
+            "msg_restore_test_confirm": "Sei sicuro? Questo sostituirà i tuoi dati attuali con dati di test.",
+            "btn_reset_colors": "🎨 Ripristina Colori Predefiniti",
+            "msg_reset_colors_confirm": "Ripristinare i colori predefiniti per questo modello? Le tue personalizzazioni di colore attuali andranno perse."
         }
     };
 

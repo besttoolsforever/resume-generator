@@ -26,15 +26,21 @@
         if (el('#input-github-label')) el('#input-github-label').value = state.formData.githubLabel || '';
         if (el('#input-additional')) el('#input-additional').value = state.formData.additional || '';
 
-        // Settings
-        if (el('#accent')) el('#accent').value = state.settings.accent || '#000000';
-        if (el('#color-main')) el('#color-main').value = state.settings.textMain || '#333333';
-        if (el('#color-sidebar')) el('#color-sidebar').value = state.settings.textSidebar || '#ffffff';
+        // Settings - Load colors for current template
+        const currentTemplate = state.settings.template || 'classic';
+        const colors = CVApp.State.getTemplateColors(currentTemplate);
+
+        if (el('#accent')) el('#accent').value = colors.accent || '#000000';
+        if (el('#color-main')) el('#color-main').value = colors.textMain || '#333333';
+        if (el('#color-sidebar')) el('#color-sidebar').value = colors.textSidebar || '#ffffff';
+        if (el('#color-secondary')) el('#color-secondary').value = colors.secondaryColor || '#f39c12';
+        if (el('#color-dark-bg')) el('#color-dark-bg').value = colors.darkBg || '#2c3e50';
+        if (el('#color-light-bg')) el('#color-light-bg').value = colors.lightBg || '#ecf0f1';
         if (el('#fs-name')) el('#fs-name').value = state.settings.fontName || 24;
         if (el('#fs-title')) el('#fs-title').value = state.settings.fontTitle || 16;
         if (el('#fs-body')) el('#fs-body').value = state.settings.fontBody || 12;
         if (el('#fs-small')) el('#fs-small').value = state.settings.fontSmall || 10;
-        if (el('#template-select')) el('#template-select').value = state.settings.template || 'classic';
+        if (el('#template-select')) el('#template-select').value = currentTemplate;
 
         // Lang Buttons State
         const currentLang = state.settings.language || 'en-US';
@@ -66,19 +72,26 @@
         syncForm('#input-additional', 'additional');
 
         // --- Settings ---
-        const bindSetting = (id, key) => {
+        const bindColorSetting = (id, key) => {
             const element = el(id);
             if (!element) return;
             element.addEventListener('input', (e) => {
-                state.settings[key] = e.target.value;
+                const currentTemplate = state.settings.template || 'classic';
+                if (!state.settings.templateColors[currentTemplate]) {
+                    state.settings.templateColors[currentTemplate] = {};
+                }
+                state.settings.templateColors[currentTemplate][key] = e.target.value;
                 CVApp.State.saveState();
                 CVApp.Render.updatePreview();
             });
         }
 
-        bindSetting('#accent', 'accent');
-        bindSetting('#color-main', 'textMain');
-        bindSetting('#color-sidebar', 'textSidebar');
+        bindColorSetting('#accent', 'accent');
+        bindColorSetting('#color-main', 'textMain');
+        bindColorSetting('#color-sidebar', 'textSidebar');
+        bindColorSetting('#color-secondary', 'secondaryColor');
+        bindColorSetting('#color-dark-bg', 'darkBg');
+        bindColorSetting('#color-light-bg', 'lightBg');
 
         // Fonts
         ['name', 'title', 'body', 'small'].forEach(font => {
@@ -98,6 +111,10 @@
             tmplSelect.addEventListener('change', (e) => {
                 state.settings.template = e.target.value;
                 CVApp.State.saveState();
+
+                // Load colors for new template
+                initInputs();
+
                 CVApp.Render.updatePreview();
             });
         }
@@ -331,13 +348,25 @@
         const btnRestoreTest = el('#restore-test-btn');
         if (btnRestoreTest) {
             btnRestoreTest.addEventListener('click', () => {
-                // Optional: confirmation
-                // if (!confirm("Restore default test content?")) return;
+                if (!confirm(CVApp.I18n.getTranslation('msg_restore_test_confirm'))) return;
 
                 CVApp.State.resetState();
                 CVApp.State.saveState();
                 initInputs();
                 CVApp.Render.renderSidebarForms();
+                CVApp.Render.updatePreview();
+            });
+        }
+
+        // Reset Colors Button
+        const btnResetColors = el('#reset-colors-btn');
+        if (btnResetColors) {
+            btnResetColors.addEventListener('click', () => {
+                if (!confirm(CVApp.I18n.getTranslation('msg_reset_colors_confirm'))) return;
+
+                const currentTemplate = state.settings.template || 'classic';
+                CVApp.State.resetTemplateColors(currentTemplate);
+                initInputs(); // Reload color inputs with defaults
                 CVApp.Render.updatePreview();
             });
         }
@@ -464,6 +493,12 @@
                             CVApp.State.saveState();
                             initInputs();
                             CVApp.Render.renderSidebarForms();
+
+                            // Set language in I18n module before updating interface
+                            if (json.settings && json.settings.language) {
+                                CVApp.I18n.setLanguage(json.settings.language);
+                            }
+
                             CVApp.Render.updateInterfaceLanguage();
                             CVApp.Render.updatePreview();
                             alert(CVApp.I18n.getTranslation('msg_restore_success'));

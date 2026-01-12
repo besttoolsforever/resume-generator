@@ -396,11 +396,17 @@ CVApp.Render = (function () {
             });
         }
 
-        // Styles
+        // Styles - Get colors for current template
         const rootStyle = document.documentElement.style;
-        rootStyle.setProperty('--accent', state.settings.accent);
-        rootStyle.setProperty('--text-color-main', state.settings.textMain);
-        rootStyle.setProperty('--text-color-sidebar', state.settings.textSidebar);
+        const currentTemplate = state.settings.template || 'classic';
+        const colors = CVApp.State.getTemplateColors(currentTemplate);
+
+        rootStyle.setProperty('--accent', colors.accent);
+        rootStyle.setProperty('--text-color-main', colors.textMain);
+        rootStyle.setProperty('--text-color-sidebar', colors.textSidebar);
+        rootStyle.setProperty('--secondary-color', colors.secondaryColor);
+        rootStyle.setProperty('--dark-bg', colors.darkBg);
+        rootStyle.setProperty('--light-bg', colors.lightBg);
         rootStyle.setProperty('--font-size-name', state.settings.fontName + 'px');
         rootStyle.setProperty('--font-size-title', state.settings.fontTitle + 'px');
         rootStyle.setProperty('--font-size-body', state.settings.fontBody + 'px');
@@ -415,6 +421,83 @@ CVApp.Render = (function () {
             }
         });
         cvContainer.classList.add(`cv-template-${state.settings.template || 'classic'}`);
+
+        // Special layout for Bold template
+        if (state.settings.template === 'bold') {
+            const sidebar = el('.sidebar', cvContainer);
+            const main = el('.main', cvContainer);
+
+            // Move Description section to end of sidebar (after Contact)
+            const descSection = el('#desc-section');
+            const contactSection = el('#contact-section');
+            if (descSection && contactSection && sidebar) {
+                sidebar.insertBefore(descSection, contactSection.nextSibling);
+            }
+
+            // Create or get Pre-Footer (for Additional Info)
+            let preFooter = el('.pre-footer', cvContainer);
+            if (!preFooter) {
+                preFooter = document.createElement('div');
+                preFooter.className = 'pre-footer';
+                // Insert before footer if it exists, otherwise at end
+                const existingFooter = el('.footer', cvContainer);
+                if (existingFooter) {
+                    cvContainer.insertBefore(preFooter, existingFooter);
+                } else {
+                    cvContainer.appendChild(preFooter);
+                }
+            } else {
+                preFooter.innerHTML = '';
+            }
+
+            // Create or get footer (for Langs & Portfolio)
+            let footer = el('.footer', cvContainer);
+            if (!footer) {
+                footer = document.createElement('div');
+                footer.className = 'footer';
+                cvContainer.appendChild(footer);
+            } else {
+                footer.innerHTML = ''; // Clear existing content
+            }
+
+            // Re-order DOM: Ensure preFooter is before Footer
+            cvContainer.appendChild(preFooter);
+            cvContainer.appendChild(footer);
+
+            // Move Sections
+            const portfolioSection = el('#portfolio-section');
+            const langsSection = el('#langs-section');
+            const additionalSection = el('#additional-section');
+
+            // Additional Info -> Pre-Footer
+            if (additionalSection) preFooter.appendChild(additionalSection.cloneNode(true));
+
+            // Langs & Portfolio -> Footer (Side by Side)
+            if (langsSection) footer.appendChild(langsSection.cloneNode(true));
+            if (portfolioSection) footer.appendChild(portfolioSection.cloneNode(true));
+
+            // Hide originals in sidebar
+            if (portfolioSection) portfolioSection.style.display = 'none';
+            if (langsSection) langsSection.style.display = 'none';
+            if (additionalSection) additionalSection.style.display = 'none';
+        } else {
+            // Reset for other templates
+            const footer = el('.footer', cvContainer);
+            if (footer) footer.remove();
+
+            const preFooter = el('.pre-footer', cvContainer);
+            if (preFooter) preFooter.remove();
+
+
+            // Restore original visibility
+            const portfolioSection = el('#portfolio-section');
+            const langsSection = el('#langs-section');
+            const additionalSection = el('#additional-section');
+
+            if (portfolioSection) portfolioSection.style.display = '';
+            if (langsSection) langsSection.style.display = '';
+            if (additionalSection) additionalSection.style.display = '';
+        }
     };
 
     const updateInterfaceLanguage = () => {

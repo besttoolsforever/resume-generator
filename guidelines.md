@@ -27,6 +27,17 @@ This document outlines the **Gold Standards** for creating high-quality, visuall
     *   `var(--text-color-main)`: For body text.
     *   `var(--text-color-sidebar)`: For text inside the sidebar (if it has a background).
 
+*   **Template-Specific Colors (New):** For templates that need additional customizable colors:
+    *   `var(--secondary-color)`: Default `#f39c12` (orange/gold). Used for secondary accents, highlights, or alternative colors.
+    *   `var(--dark-bg)`: Default `#2c3e50` (dark blue-gray). Used for dark backgrounds in templates like Compact, Timeline, Orbit.
+    *   `var(--light-bg)`: Default `#ecf0f1` (light gray). Used for light text on dark backgrounds or light background colors.
+    
+    **When to Use Template-Specific Colors:**
+    - If your template needs a **second accent color** different from the main accent (e.g., Bold template uses orange borders alongside blue accents), use `var(--secondary-color)`.
+    - If your template has a **dark mode** or **dark sidebar** that's not based on the main accent, use `var(--dark-bg)`.
+    - If your template needs **light-colored text or backgrounds** as part of the design, use `var(--light-bg)`.
+
+
 > **⚠️ CRITICAL CONTRAST WARNING:**
 > If you design a template with a **LIGHT** or **WHITE** background (especially in the Sidebar), you **MUST** explicitly set the text color to a dark value (e.g., `#333` or `var(--text-color-main)`).
 > *   Do **NOT** assume the default text color is black.
@@ -74,7 +85,75 @@ When you finish the CSS:
     *   Check if font scaling works in settings.
     *   Check if color changes apply correctly.
     *   Check if the layout breaks on long text.
+    *   **CRITICAL:** Test print preview with long content (see section 4 below)
 
 ---
 
-**Remember:** A great template is not just about code; it's about helping the user present their best self. Make it clean, professional, and beautiful.
+## 4. Print-Safe Design (CRITICAL - ADVANCED ENGINE)
+
+**The print engine has been upgraded to enforce absolute visual harmony. All templates must adhere to strict fragmentation rules.**
+
+### Core Principles
+
+1.  **Atomic Entities**: Every data block (Experience Item, Education Entry, Skill Group) is treated as an indivisible unit.
+    *   **Rule**: `break-inside: avoid` is automatically applied to all `.item`, `.edu-item`, etc.
+    *   **Behavior**: If an item needs 10 lines but only 5 are available, *the entire block* moves to the next page.
+
+2.  **Header Unity**: Section Headers (`.section-title`) act as magnetic anchors.
+    *   **Rule**: `break-after: avoid` prevents a header from ever being the last item on a page. it will always pull the first item of its section with it.
+
+3.  **Dynamic Visual Margins**:
+    *   **Rule**: Content on Page 2+ never touches the physical top edge.
+    *   **Implementation**: A `padding-top: 5mm` is enforced on the content container on every page to ensure breathing room, working in tandem with the browser's native `@page` margins.
+
+4.  **Text Integrity**:
+    *   **Rule**: No "orphans" (single lines at bottom) or "widows" (single lines at top).
+    *   **Value**: `orphans: 3; widows: 3;` enforced globally.
+
+### Developer Checklist for New Templates
+
+When creating a new template, ensure your CSS structure supports these rules:
+
+*   ✅ **Do not override** `break-inside` on `.item` classes unless absolutely necessary for a unified grid layout.
+*   ✅ **Test** that your custom classes (if any) inherit these protections.
+*   ✅ **Verify** that `page-break-after: avoid` is working for your custom headers.
+
+### Common Pitfalls
+
+❌ **DON'T**: Create huge monolithic blocks. If a single item is taller than a page, it *will* be cut. Keep items reasonably sized.
+✅ **DO**: Allow natural breaks between major sections (`section { break-inside: auto; }`) so the engine can find the best split point.
+
+❌ **DON'T**: Rely on fixed heights (px).
+✅ **DO**: Let content flow naturally to allow the print engine to calculate split points dynamically.
+
+
+
+
+### Example: Complex Layout (Bold Template)
+
+For templates with complex layouts (multiple sections, footers, etc.):
+
+```css
+@media print {
+  /* Prevent header from breaking */
+  .cv-template-bold .sidebar {
+    page-break-after: avoid;
+  }
+  
+  /* Allow main content to break naturally */
+  .cv-template-bold .main {
+    page-break-inside: auto;
+  }
+  
+  /* Keep footer sections intact */
+  .cv-template-bold .pre-footer,
+  .cv-template-bold .footer {
+    page-break-before: auto;
+    page-break-inside: avoid;
+  }
+}
+```
+
+---
+
+**Remember:** A great template is not just about code; it's about helping the user present their best self. Make it clean, professional, beautiful, **and print-ready**.

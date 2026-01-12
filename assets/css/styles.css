@@ -7,6 +7,14 @@
   --text-color-sidebar: #fff;
   --muted: #666;
 
+  /* Additional Template Colors / Cores Adicionais de Templates */
+  --secondary-color: #f39c12;
+  /* Used for secondary accents in some templates */
+  --dark-bg: #2c3e50;
+  /* Dark background for certain templates */
+  --light-bg: #ecf0f1;
+  /* Light background/text for contrast */
+
   /* Layout / Leiaute */
   --page-width: 210mm;
   --page-height: 297mm;
@@ -456,8 +464,167 @@ mark.editing {
 }
 
 /* ============================
+   PRINT STYLES - STRICT FLOW ENGINE
+   ============================ */
+
+/* Define print page margins */
+@page {
+  /* Minimal margins to allow backgrounds to reach edges */
+  size: A4;
+  margin: 5mm 0 5mm 0;
+}
+
+
+/* Specific margins for pages > 1 (Handled by browser layout engine mostly, 
+   but we ensure top margin via body/container padding if needed) */
+
+/* Print-specific rules to prevent text fragmentation */
+@media print {
+
+  /* 1. Reset & Cleanup */
+  .panel,
+  .preview-wrap,
+  .modal-overlay,
+  button,
+  .close-modal,
+  .lang-btn {
+    display: none !important;
+  }
+
+  body {
+    background: white;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .app {
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* 2. Page Container Logic */
+  .cv-a4 {
+    width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    /* Let @page handle margins */
+    border: none !important;
+    overflow: visible !important;
+  }
+
+  .cv {
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* 3. Global Pagination Rules - STRICT FLOW */
+  /* Force containers to be blocks to prevent Grid/Flex pagination bugs */
+  .sidebar,
+  .main,
+  .footer,
+  .pre-footer,
+  #cv-exps,
+  #cv-edus,
+  #cv-courses,
+  .custom-section-items,
+  .cv-section {
+    display: block !important;
+    width: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+  }
+
+  /* Internal content padding for text spacing on each page */
+  .sidebar,
+  .main {
+    padding-top: 15mm !important;
+    /* Attempt to repeat background on page fragments */
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+
+
+  /* 4. Atomic Content Blocks (Indivisible Units) */
+  /* These blocks must NEVER split across pages */
+  .item,
+  /* Experience Item */
+  .edu-item,
+  /* Education Item */
+  .experience-item,
+  /* Explicit class from render.js */
+  .exp-item,
+  /* (Alias) */
+  .course-item,
+  /* Course Item */
+  .lang-item,
+  /* Language Item */
+  .custom-section-item,
+  /* Custom Section Item */
+  .contact-item,
+  /* Contact Item */
+  .name-block,
+  /* Header Name */
+  .contact,
+  /* Contact Info */
+  .additional-info {
+    /* Additional Info */
+    display: block !important;
+    /* Critical for break-inside to work */
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    position: relative;
+    /* Visual breathing room */
+    margin-bottom: 5mm !important;
+    overflow: visible !important;
+  }
+
+  /* 5. Text Integrity (Widows & Orphans) */
+  /* Prevent isolated lines at top/bottom of pages */
+  p,
+  li,
+  .desc,
+  .item-body {
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* 6. Header Unity (Prevent Orphaned Headers) */
+  /* Headers must ALWAYS be followed by content */
+  .section-title,
+  .item-header {
+    break-after: avoid !important;
+    page-break-after: avoid !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    display: block !important;
+    /* Ensure header isn't the last thing on the page */
+    margin-bottom: 2mm !important;
+  }
+
+  /* 7. Semantic Flow Control */
+  /* Allow natural breaks between major sections, unless they fit */
+  section,
+  .cv-section,
+  #cv-main-content>div {
+    display: block !important;
+    break-inside: auto !important;
+    /* Allow break if section is huge */
+    page-break-inside: auto !important;
+  }
+}
+
+/* ============================
    TEMPLATES
    ============================ */
+
+
 
 /* 1. Classic (Default) - Sidebar Left, Main Right */
 .cv-template-classic {
@@ -777,8 +944,8 @@ mark.editing {
 
 .cv-template-compact .sidebar {
   grid-area: sidebar;
-  background: #2c3e50;
-  color: #ecf0f1;
+  background: var(--dark-bg);
+  color: var(--light-bg);
   padding: 15px;
 }
 
@@ -790,13 +957,13 @@ mark.editing {
 
 .cv-template-compact .surname {
   font-size: 16px;
-  color: #bdc3c7;
+  color: rgba(255, 255, 255, 0.7);
   font-weight: 300;
 }
 
 .cv-template-compact .sidebar .section-title {
   font-size: 11px;
-  color: #3498db;
+  color: var(--secondary-color);
   margin: 12px 0 6px;
   font-weight: 700;
   text-transform: uppercase;
@@ -804,14 +971,14 @@ mark.editing {
 }
 
 .cv-template-compact .contact-label {
-  color: #3498db;
+  color: var(--secondary-color);
   font-size: 10px;
 }
 
 .cv-template-compact .desc {
   font-size: 10px;
   line-height: 1.4;
-  color: #ecf0f1;
+  color: var(--light-bg);
 }
 
 .cv-template-compact .main {
@@ -842,11 +1009,11 @@ mark.editing {
 }
 
 .cv-template-bold .sidebar {
-  background: linear-gradient(135deg, var(--accent) 0%, #2c3e50 100%);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--dark-bg) 100%);
   color: #fff;
   padding: 15px 40px;
   text-align: left;
-  border-bottom: 5px solid #f39c12;
+  border-bottom: 5px solid var(--secondary-color);
 }
 
 .cv-template-bold .name-block {
@@ -865,7 +1032,7 @@ mark.editing {
 
 .cv-template-bold .surname {
   font-size: var(--font-size-name);
-  color: #f39c12;
+  color: var(--secondary-color);
   font-weight: 300;
   letter-spacing: 2px;
 }
@@ -888,12 +1055,12 @@ mark.editing {
 }
 
 .cv-template-bold .contact-label {
-  color: #f39c12;
+  color: var(--secondary-color);
   font-weight: 700;
 }
 
 .cv-template-bold .sidebar .section-title {
-  color: #f39c12;
+  color: var(--secondary-color);
   font-size: 13px;
   font-weight: 700;
   text-transform: uppercase;
@@ -914,10 +1081,95 @@ mark.editing {
   color: var(--accent);
   font-size: 16px;
   font-weight: 700;
-  border-left: 5px solid #f39c12;
+  border-left: 5px solid var(--secondary-color);
   padding-left: 15px;
   margin-bottom: 15px;
 }
+
+/* Bold template footer for Portfolio, Languages, Additional Info */
+/* Bold Template - Sophisticated Footer Layout */
+
+/* 1. Pre-Footer: Additional Information */
+.cv-template-bold .pre-footer {
+  padding: 25px 40px;
+  background: #fff;
+  border-top: 1px solid #eee;
+}
+
+.cv-template-bold .pre-footer .section-title {
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
+  display: inline-block;
+  border-bottom: 2px solid var(--secondary-color);
+  padding-bottom: 2px;
+}
+
+.cv-template-bold .pre-footer .additional-info {
+  font-size: var(--font-size-small);
+  color: #555;
+  line-height: 1.6;
+}
+
+/* 2. Main Footer: Languages & Portfolio */
+.cv-template-bold .footer {
+  background: var(--dark-bg);
+  /* Dark background for bold contrast */
+  color: var(--light-bg);
+  padding: 30px 40px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  /* 2 Columns */
+  gap: 40px;
+  align-items: start;
+  /* Ensure top alignment */
+}
+
+.cv-template-bold .footer .section-title {
+  color: var(--secondary-color);
+  /* Pop color on dark bg */
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 15px;
+  margin-top: 0;
+  /* Reset margin for perfect alignment */
+  border-bottom: none;
+  /* Clean look */
+  display: block;
+  /* Ensure block layout */
+}
+
+.cv-template-bold .footer .icon-link {
+  color: var(--light-bg);
+  font-size: var(--font-size-small);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: opacity 0.3s;
+}
+
+.cv-template-bold .footer .icon-link:hover {
+  opacity: 0.8;
+}
+
+.cv-template-bold .footer .icon-link svg {
+  fill: var(--secondary-color);
+  width: 16px;
+  height: 16px;
+}
+
+.cv-template-bold .footer #cv-langs {
+  font-size: var(--font-size-small);
+  line-height: 1.6;
+}
+
+
 
 
 /* 9. Timeline - Chronological Style */
@@ -929,8 +1181,8 @@ mark.editing {
 
 .cv-template-timeline .sidebar {
   grid-area: sidebar;
-  background: #34495e;
-  color: #ecf0f1;
+  background: var(--dark-bg);
+  color: var(--light-bg);
   padding: 25px 20px;
 }
 
@@ -941,13 +1193,13 @@ mark.editing {
 }
 
 .cv-template-timeline .surname {
-  color: #95a5a6;
+  color: rgba(255, 255, 255, 0.7);
   font-size: 18px;
   font-weight: 300;
 }
 
 .cv-template-timeline .sidebar .section-title {
-  color: #3498db;
+  color: var(--secondary-color);
   font-size: 11px;
   font-weight: 700;
   margin-top: 18px;
@@ -957,11 +1209,11 @@ mark.editing {
 }
 
 .cv-template-timeline .contact-label {
-  color: #3498db;
+  color: var(--secondary-color);
 }
 
 .cv-template-timeline .desc {
-  color: #ecf0f1;
+  color: var(--light-bg);
   font-size: 11px;
   line-height: 1.5;
 }
@@ -1023,10 +1275,7 @@ mark.editing {
    PRINT STYLES
    ============================ */
 @media print {
-  @page {
-    margin: 0;
-    size: auto;
-  }
+
 
   body {
     background: #fff;
@@ -1343,14 +1592,14 @@ mark.editing {
   display: grid;
   grid-template-columns: 320px 1fr;
   grid-template-areas: "sidebar main";
-  background: #1a1a2e;
+  background: var(--dark-bg);
   /* Deep dark blue */
   color: #e0e0e0;
 }
 
 .cv-template-orbit .sidebar {
   grid-area: sidebar;
-  background: #16213e;
+  background: rgba(0, 0, 0, 0.2);
   /* Slightly lighter dark */
   padding: 40px 30px;
   text-align: center;
@@ -1412,7 +1661,7 @@ mark.editing {
 .cv-template-orbit .main {
   grid-area: main;
   padding: 50px 40px;
-  background: #1a1a2e;
+  background: var(--dark-bg);
 }
 
 .cv-template-orbit .main .section-title {
@@ -1472,4 +1721,96 @@ mark.editing {
 /* Explicit override for edu-item bold text */
 .cv-template-orbit .edu-item strong {
   color: #fff;
+}
+
+/* ============================
+   TEMPLATE-SPECIFIC PRINT RULES
+   ============================ */
+
+@media print {
+
+  /* Classic Template */
+  .cv-template-classic .sidebar,
+  .cv-template-classic .main {
+    page-break-inside: avoid;
+  }
+
+  /* Professional Template */
+  .cv-template-professional .sidebar,
+  .cv-template-professional .main {
+    page-break-inside: avoid;
+  }
+
+  /* Modern Template */
+  .cv-template-modern .sidebar,
+  .cv-template-modern .main {
+    page-break-inside: avoid;
+  }
+
+  /* Banner Template */
+  .cv-template-banner .sidebar {
+    page-break-after: avoid;
+  }
+
+  .cv-template-banner .main {
+    page-break-inside: avoid;
+  }
+
+  /* Minimal Template */
+  .cv-template-minimal .sidebar,
+  .cv-template-minimal .main {
+    page-break-inside: avoid;
+  }
+
+  /* Elegant Template */
+  .cv-template-elegant .sidebar,
+  .cv-template-elegant .main {
+    page-break-inside: avoid;
+  }
+
+  /* Compact Template */
+  .cv-template-compact .sidebar,
+  .cv-template-compact .main {
+    page-break-inside: avoid;
+  }
+
+  /* Bold Template (with pre-footer and footer) */
+  .cv-template-bold .sidebar {
+    page-break-after: avoid;
+  }
+
+  .cv-template-bold .main {
+    page-break-inside: auto;
+    /* Allow breaks in main for long content */
+  }
+
+  .cv-template-bold .pre-footer,
+  .cv-template-bold .footer {
+    page-break-before: auto;
+    page-break-inside: avoid;
+  }
+
+  /* Timeline Template */
+  .cv-template-timeline .sidebar,
+  .cv-template-timeline .main {
+    page-break-inside: avoid;
+  }
+
+  /* Nova Template */
+  .cv-template-nova .sidebar,
+  .cv-template-nova .main {
+    page-break-inside: avoid;
+  }
+
+  /* Swiss Template */
+  .cv-template-swiss .sidebar,
+  .cv-template-swiss .main {
+    page-break-inside: avoid;
+  }
+
+  /* Orbit Template */
+  .cv-template-orbit .sidebar,
+  .cv-template-orbit .main {
+    page-break-inside: avoid;
+  }
 }

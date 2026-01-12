@@ -78,10 +78,29 @@
 
       <hr style="margin: 16px 0;" />
 
+      <button id="reset-colors-btn" class="btn-secondary" style="width: 100%; margin-bottom: 10px;">
+        <span data-i18n="btn_reset_colors">🎨 Restore Default Colors</span>
+      </button>
+      <hr style="margin: 10px 0;" />
+
       <h4 data-i18n="ui_appearance">Appearance</h4> <!-- ensure this translates -->
 
       <label data-i18n="ui_accent_color">Accent Color</label>
       <input id="accent" type="color">
+
+      <div class="row">
+        <div>
+          <label data-i18n="ui_secondary_color">Secondary Color</label>
+          <input id="color-secondary" type="color">
+        </div>
+        <div>
+          <label data-i18n="ui_dark_bg">Dark Background</label>
+          <input id="color-dark-bg" type="color">
+        </div>
+      </div>
+
+      <label data-i18n="ui_light_bg">Light Background</label>
+      <input id="color-light-bg" type="color">
 
       <div class="row">
         <div>
