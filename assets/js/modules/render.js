@@ -356,6 +356,8 @@ CVApp.Render = (function () {
         el('#cv-additional').innerText = state.formData.additional;
 
         const ghUrl = state.formData.githubUrl;
+        const isGitHubUrl = ghUrl && ghUrl.toLowerCase().includes('github.com');
+
         if (ghUrl) {
             el('#cv-github').href = ghUrl;
             let linkText = state.formData.githubLabel;
@@ -363,6 +365,12 @@ CVApp.Render = (function () {
                 linkText = ghUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
             }
             el('#cv-github-user').innerText = linkText;
+
+            // Show/hide GitHub SVG icon based on URL
+            const githubSvg = el('#cv-github svg');
+            if (githubSvg) {
+                githubSvg.style.display = isGitHubUrl ? '' : 'none';
+            }
         }
 
         toggleElementVisibility(state.formData.desc, 'desc-section');
@@ -370,11 +378,13 @@ CVApp.Render = (function () {
         toggleElementVisibility(state.formData.email, 'email-item');
         toggleElementVisibility(state.formData.phone, 'phone-item');
         toggleElementVisibility(state.formData.city, 'city-item');
-        toggleElementVisibility(ghUrl, 'portfolio-section');
-        toggleElementVisibility(state.formData.additional, 'additional-section');
+
+        // Hide PERSONAL DATA section if all contact fields are empty
+        const hasAnyContactData = state.formData.age || state.formData.email ||
+            state.formData.phone || state.formData.city;
+        toggleElementVisibility(hasAnyContactData, 'contact-section');
 
 
-        // Languages (Fixed placement in sidebar for now)
         const langWrap = el('#cv-langs');
         if (langWrap) {
             langWrap.innerHTML = '';
@@ -384,7 +394,6 @@ CVApp.Render = (function () {
                 d.innerHTML = `<strong>${l.name}:</strong> ${l.level}`;
                 langWrap.appendChild(d);
             });
-            toggleElementVisibility(state.languages, 'langs-section');
         }
 
 
@@ -494,14 +503,32 @@ CVApp.Render = (function () {
             if (preFooter) preFooter.remove();
 
 
-            // Restore original visibility
+            // Restore original visibility BUT respect empty state
             const portfolioSection = el('#portfolio-section');
             const langsSection = el('#langs-section');
             const additionalSection = el('#additional-section');
 
-            if (portfolioSection) portfolioSection.style.display = '';
-            if (langsSection) langsSection.style.display = '';
-            if (additionalSection) additionalSection.style.display = '';
+            // Don't just force visible - reapply conditional logic
+            // (these will be handled by the toggleElementVisibility calls 
+            // that happen later in updatePreview)
+        }
+
+        // IMPORTANT: Apply visibility toggles at the END of updatePreview
+        // to ensure they are not overridden by template-specific logic
+        const finalGhUrl = state.formData.githubUrl;
+        const finalIsGitHubUrl = finalGhUrl && finalGhUrl.toLowerCase().includes('github.com');
+
+        toggleElementVisibility(state.languages, 'langs-section');
+        toggleElementVisibility(finalGhUrl, 'portfolio-section');
+        toggleElementVisibility(state.formData.additional, 'additional-section');
+
+        // Hide GitHub icon if URL is not from GitHub
+        const finalGithubLink = el('#cv-github');
+        if (finalGithubLink) {
+            const finalGithubSvg = el('svg', finalGithubLink);
+            if (finalGithubSvg) {
+                finalGithubSvg.style.display = (finalIsGitHubUrl && finalGhUrl) ? '' : 'none';
+            }
         }
     };
 

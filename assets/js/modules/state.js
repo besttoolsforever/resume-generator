@@ -427,8 +427,12 @@
         if (!Array.isArray(CVApp.State.data.languages)) CVApp.State.data.languages = [];
         if (!Array.isArray(CVApp.State.data.customSections)) CVApp.State.data.customSections = [];
         if (!Array.isArray(CVApp.State.data.sectionOrder)) {
-          // Migration: If no order exists, create default one based on current data
-          CVApp.State.resetState();
+          // Migration: Create default order structure without resetting all data
+          CVApp.State.data.sectionOrder = [
+            { id: 'edu-section', type: 'system' },
+            { id: 'courses-section', type: 'system' },
+            { id: 'exp-section', type: 'system' }
+          ];
         }
       } catch (e) {
         console.error("Failed to load state", e);

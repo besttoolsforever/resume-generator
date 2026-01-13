@@ -393,7 +393,12 @@
                 state.courses = [];
                 state.languages = [];
                 state.customSections = [];
-                state.sectionOrder = [];
+                // Preserve system section structure so sections can render when new items are added
+                state.sectionOrder = [
+                    { id: 'edu-section', type: 'system' },
+                    { id: 'courses-section', type: 'system' },
+                    { id: 'exp-section', type: 'system' }
+                ];
 
                 CVApp.State.saveState();
                 initInputs();
